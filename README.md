@@ -10,7 +10,7 @@
 
 ![alt text](img/image-1.png)
 
-3. Creamos el nuevo repositorio.
+3. Creamos el nuevo repositorio en git y realizamos 
 
 # Para
 
@@ -22,10 +22,10 @@
 ## intalar vite
 - npm install vite --save-dev
 
-4. Index
 
 
-5. Main
+
+# 4. Main
 - Lo más relevante:
 - Captura el formulario y los elementos clave del DOM.
 - Configura la API de Open Library.
