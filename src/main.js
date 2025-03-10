@@ -64,23 +64,31 @@ const createBookCard = (book) => {
             `;
 };
 
-// Event Listeners: Escuchamos el evento de envío del formulario para realizar la búsqueda.
+// Función debounce para optimizar las llamadas a la API
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
 
-elements.form.addEventListener("submit", async(e) => {
-    e.preventDefault();
-
-    const searchTerm = elements.input.value.trim();
-
+// Función principal de búsqueda
+const searchBooks = async (searchTerm) => {
     if (!searchTerm) {
-        showError("Por favor, introduce un título para buscar");
+        hideError();
+        clearResults();
         return;
     }
 
-    hideError();
-    clearResults();
-    showLoading();
-
     try {
+        showLoading();
+        hideError();
+
         const url = new URL(config.baseUrl);
         url.searchParams.append("title", searchTerm);
         url.searchParams.append("limit", config.limit);
@@ -100,7 +108,14 @@ elements.form.addEventListener("submit", async(e) => {
         }
 
         const booksHTML = docs.map(createBookCard).join("");
+        
+        // Animación suave para los resultados
+        elements.results.style.opacity = "0";
         elements.results.innerHTML = booksHTML;
+        setTimeout(() => {
+            elements.results.style.opacity = "1";
+        }, 150);
+
     } catch (error) {
         showError(
             "Ha ocurrido un error al buscar los libros. Por favor, inténtalo de nuevo."
@@ -109,4 +124,36 @@ elements.form.addEventListener("submit", async(e) => {
     } finally {
         hideLoading();
     }
+};
+
+// Crear versión debounced de la función de búsqueda
+const debouncedSearch = debounce((searchTerm) => searchBooks(searchTerm), 300);
+
+// Event Listeners
+elements.form.addEventListener("submit", async(e) => {
+    e.preventDefault();
+    const searchTerm = elements.input.value.trim();
+    searchBooks(searchTerm);
 });
+
+// Búsqueda en tiempo real mientras se escribe
+elements.input.addEventListener("input", (e) => {
+    const searchTerm = e.target.value.trim();
+    debouncedSearch(searchTerm);
+});
+
+// Añadir estilos dinámicos
+const style = document.createElement('style');
+style.textContent = `
+    .results {
+        transition: opacity 0.3s ease-in-out;
+    }
+    .book-item {
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+`;
+document.head.appendChild(style);
