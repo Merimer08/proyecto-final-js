@@ -1,14 +1,30 @@
-<!doctype html>
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-    <script type="module" crossorigin src="/assets/index-_AYE_jbl.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CrYBktwj.css">
-  </head>
-  <body>
-    <div id="app"></div>
-  </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Libros</title>
+  <link rel="stylesheet" crossorigin href="/proyecto-final-js/assets/index-DeJbb2BL.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="site-header">
+            <div class="logo-container">
+                <img src="/proyecto-final-js/assets/logo-CTQHxwIH.png" alt="Logo" class="site-logo">
+            </div>
+            <h1>Buscador de Libros</h1>
+        </header>
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Introduce el título del libro" autocomplete="off">
+            <button type="submit">Buscar</button>
+        </form>
+        <div id="error" class="error"></div>
+        <div id="loading">Buscando libros...</div>
+        <div id="results" class="results"></div>
+    </div>
+    <script src="src/main.js"></script>
+</body>
+
 </html>
