@@ -20,6 +20,22 @@ const showError = (message) => {
     elements.error.textContent = message; // Establece el contenido del mensaje de error.
 };
 
+const hideError = () => {
+    elements.error.style.display = "none";
+};
+
+const showLoading = () => {
+    elements.loading.style.display = "block";
+};
+
+const hideLoading = () => {
+    elements.loading.style.display = "none";
+};
+
+const clearResults = () => {
+    elements.results.innerHTML = "";
+};
+
 // Función para crear la tarjeta de cada libro que se mostrará en la página.
 const createBookCard = (book) => {
     const {
@@ -51,54 +67,46 @@ const createBookCard = (book) => {
 // Event Listeners: Escuchamos el evento de envío del formulario para realizar la búsqueda.
 
 elements.form.addEventListener("submit", async(e) => {
-    e.preventDefault(); // Previene el comportamiento predeterminado del formulario (recargar la página).
+    e.preventDefault();
 
-    const searchTerm = elements.input.value.trim(); // Toma el valor del campo de búsqueda y lo recorta de espacios innecesarios.
+    const searchTerm = elements.input.value.trim();
 
-    // Si no se introdujo texto, muestra un mensaje de error.
     if (!searchTerm) {
         showError("Por favor, introduce un título para buscar");
         return;
     }
 
-    hideError(); // Oculta cualquier error anterior.
-    clearResults(); // Limpia los resultados anteriores.
-    showLoading(); // Muestra el mensaje de carga.
+    hideError();
+    clearResults();
+    showLoading();
 
     try {
-        // Construye la URL con los parámetros de búsqueda.
         const url = new URL(config.baseUrl);
-        url.searchParams.append("title", searchTerm); // Agrega el término de búsqueda a la URL.
-        url.searchParams.append("limit", config.limit); // Limita los resultados a 12.
+        url.searchParams.append("title", searchTerm);
+        url.searchParams.append("limit", config.limit);
 
-        // Realiza la solicitud HTTP a la API para buscar los libros.
         const response = await fetch(url);
 
-        // Si la respuesta no es exitosa (status no ok), lanza un error.
         if (!response.ok) {
             throw new Error("Error en la petición a la API");
         }
 
-        // Convierte la respuesta JSON en un objeto y extrae los libros (docs).
         const { docs } = await response.json();
 
-        // Si no se encontraron libros, muestra un mensaje en lugar de los resultados.
         if (docs.length === 0) {
             elements.results.innerHTML =
                 '<div class="no-results">No se encontraron libros con ese título.</div>';
             return;
         }
 
-        // Crea el HTML para cada libro y lo inserta en el contenedor de resultados.
         const booksHTML = docs.map(createBookCard).join("");
         elements.results.innerHTML = booksHTML;
     } catch (error) {
-        // Si ocurre un error en el proceso, muestra el mensaje de error.
         showError(
             "Ha ocurrido un error al buscar los libros. Por favor, inténtalo de nuevo."
         );
-        console.error("Error:", error); // Muestra el error en la consola para depuración.
+        console.error("Error:", error);
     } finally {
-        hideLoading(); // Oculta el mensaje de carga, sin importar si la solicitud fue exitosa o falló.
+        hideLoading();
     }
 });
