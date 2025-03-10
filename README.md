@@ -23,3 +23,12 @@
 - npm install vite --save-dev
 
 4. Index
+
+
+5. Main
+Lo más relevante:
+Captura el formulario y los elementos clave del DOM.
+Configura la API de Open Library.
+Muestra/oculta errores y la carga.
+Genera tarjetas de libros con título, autor y portada.
+Maneja la búsqueda y muestra los resultados en pantalla.
